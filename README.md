@@ -1,6 +1,8 @@
 # TokDownload 👾
 Baixe vídeos do TikTok sem marca d'água — rápido, mobile-first, 100% client-side, zero dependências.
 
+**Demo:** https://zerolimites0001-web.github.io/TokDownload/
+
 ## Uso
 Abra `index.html` no navegador (ou via `python3 -m http.server`) e cole o link.
 
