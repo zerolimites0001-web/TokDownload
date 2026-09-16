@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TokDownload 👾</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0b0e1a;--card:#151a30;--neon:#00ffcc;--pink:#fe2c55;--blue:#25f4ee;--txt:#fff;--mut:#8b93b0}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;padding:16px;padding-bottom:40px}
+.wrap{max-width:480px;margin:0 auto}
+.logo{text-align:center;padding:20px 0 12px}
+.logo h1{font-size:28px;letter-spacing:1px}
+.logo h1 span{color:var(--neon);text-shadow:0 0 12px var(--neon)}
+.logo p{color:var(--mut);font-size:13px;margin-top:4px}
+.card{background:var(--card);border:1px solid #222948;border-radius:16px;padding:16px;margin-top:12px;box-shadow:0 0 24px rgba(0,255,204,.08)}
+label{font-size:12px;color:var(--mut);display:block;margin-bottom:6px}
+.inputrow{display:flex;gap:8px}
+input{flex:1;background:#0b0e1a;border:1px solid #2a3358;color:#fff;border-radius:12px;padding:14px 12px;font-size:15px;outline:none;min-width:0}
+input:focus{border-color:var(--neon)}
+button{border:none;border-radius:12px;font-weight:700;cursor:pointer;min-height:48px}
+.btn-go{background:var(--neon);color:#001;padding:0 18px;font-size:16px}
+.btn-go:active{transform:scale(.96)}
+.btn{width:100%;padding:14px;margin-top:10px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-hd{background:var(--pink);color:#fff}
+.btn-sd{background:#2a3358;color:#fff}
+.btn-mp3{background:#1a213d;color:var(--blue);border:1px solid var(--blue)}
+.btn-open{background:transparent;border:1px dashed #3a4470;color:var(--mut)}
+.hdrow{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--mut)}
+.switch{width:44px;height:26px;background:#2a3358;border-radius:20px;position:relative;cursor:pointer;flex-shrink:0}
+.switch.on{background:var(--neon)}
+.switch::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.2s}
+.switch.on::after{left:21px}
+#status{text-align:center;font-size:13px;color:var(--mut);margin-top:10px;min-height:18px}
+#status.err{color:var(--pink)}
+#result{display:none}
+.preview{display:flex;gap:12px;margin-top:4px}
+.preview img{width:96px;height:128px;object-fit:cover;border-radius:10px;background:#000;flex-shrink:0}
+.meta{min-width:0;flex:1}
+.meta h3{font-size:14px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.meta p{font-size:12px;color:var(--mut);margin-top:6px}
+video{width:100%;border-radius:12px;margin-top:12px;background:#000;max-height:50vh}
+.hist{margin-top:8px}
+.hist button{background:#0b0e1a;border:1px solid #2a3358;color:var(--txt);font-size:12px;padding:10px;border-radius:10px;width:100%;text-align:left;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:0;font-weight:400}
+footer{text-align:center;color:var(--mut);font-size:11px;margin-top:16px}
+.paste{margin-top:8px;background:transparent;border:1px solid #2a3358;color:var(--neon);width:100%;font-size:13px;padding:10px}
+.prog{display:none;margin-top:12px;background:#0b0e1a;border:1px solid #2a3358;border-radius:12px;padding:12px}
+.prog.show{display:block}
+.bar{height:12px;background:#1a213d;border-radius:8px;overflow:hidden}
+.fill{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--neon),var(--blue));background-size:200% 100%;animation:slide 1s linear infinite;border-radius:8px;transition:width .15s}
+@keyframes slide{to{background-position:-200% 0}}
+.proginfo{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:8px}
+.proginfo b{color:var(--neon)}
+.spin{display:inline-block;animation:rot 1s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="logo"><h1>TOK<span>DOWNLOAD</span></h1><p>sem marca d'água • sem login • sem deps</p></div>
+<div class="card">
+<label>Link do TikTok</label>
+<div class="inputrow"><input id="url" placeholder="cole aqui: vm.tiktok.com/..." inputmode="url" autocomplete="off"><button class="btn-go" id="go">IR</button></div>
+<button class="paste" id="paste">📋 colar da área de transferência</button>
+<div id="status"></div>
+</div>
+<div class="card" id="result">
+<div class="preview"><img id="cover" alt=""><div class="meta"><h3 id="title"></h3><p id="author"></p></div></div>
+<video id="vid" controls playsinline preload="metadata"></video>
+<button class="btn btn-hd" id="dhd">⚡ BAIXAR MP4 HD SEM MARCA</button>
+<button class="btn btn-mp3" id="dmp3">⚡ baixar música MP3</button>
+<button class="btn btn-open" id="dopen">↗ abrir vídeo em nova aba</button>
+<div class="prog" id="prog"><div class="bar"><div class="fill" id="fill"></div></div><div class="proginfo"><span id="mb">0 MB / ?</span><b id="pct">0%</b><span id="eta">ETA --</span></div></div>
+</div>
+<div class="card hist" id="histCard" style="display:none"><label>Recentes</label><div id="hist"></div></div>
+<footer>via tikwm.com api • 100% client-side</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const url=$('url'),status=$('status'),result=$('result');
+let DATA=null;const HD=true;
+$('paste').onclick=async()=>{try{const t=await navigator.clipboard.readText();if(t){url.value=t.trim();fetchIt();}}catch(e){status.textContent='não consegui ler clipboard, cole manual';}};
+$('go').onclick=fetchIt;
+function setStatus(t,err){status.textContent=t;status.className=err?'err':'';}
+async function fetchIt(){
+  const u=url.value.trim();
+  if(!u){setStatus('cola um link primeiro',1);return;}
+  setStatus('⏳ buscando...');result.style.display='none';
+  try{
+    const api='https://www.tikwm.com/api/?url='+encodeURIComponent(u)+'&hd='+(HD?1:0);
+    const r=await fetch(api);
+    const j=await r.json();
+    if(j.code!==0||!j.data){setStatus('❌ '+(j.msg||'não achei esse vídeo'),1);return;}
+    DATA=j.data;
+    const play=DATA.hdplay||DATA.play, cover=DATA.cover, title=DATA.title||'Sem título';
+    const au=DATA.author?('@'+DATA.author.unique_id+' • '+DATA.author.nickname):'';
+    $('cover').src=cover||'';$('title').textContent=title;$('author').textContent=au;
+    $('vid').src=play;
+    result.style.display='block';setStatus('✅ pronto!');
+    saveHist(u,title);
+    if(navigator.vibrate)try{navigator.vibrate(30)}catch(e){}
+  }catch(e){setStatus('❌ erro de rede: '+e.message,1);}
+}
+async function dl(href,name,btn){
+  const fname=name||'tokdownload.mp4';
+  const old=btn?btn.textContent:'';
+  const prog=$('prog'),fill=$('fill'),mb=$('mb'),pct=$('pct'),eta=$('eta');
+  prog.classList.add('show');
+  const fmt=v=>v>1048576?(v/1048576).toFixed(1)+' MB':Math.max(1,Math.round(v/1024))+' KB';
+  try{
+    if(btn){btn.innerHTML='<span class="spin">⏳</span> baixando...';btn.disabled=true;}
+    const t0=Date.now();
+    const r=await fetch(href);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const total=+r.headers.get('content-length')||0;
+    const rd=r.body.getReader();
+    const chunks=[];let got=0;
+    while(true){
+      const {done,value}=await rd.read();
+      if(done)break;
+      chunks.push(value);got+=value.length;
+      const el=(Date.now()-t0)/1000;
+      const speed=got/Math.max(el,0.1);
+      const p=total?Math.round(got/total*100):0;
+      fill.style.width=(total?p:Math.min(95,el*12))+'%';
+      pct.textContent=total?p+'%':fmt(got);
+      mb.textContent=fmt(got)+' / '+(total?fmt(total):'?');
+      const left=total?Math.max(0,total-got):0;
+      eta.textContent=total?('ETA '+Math.ceil(left/Math.max(speed,1))+'s • '+(speed/1048576).toFixed(1)+' MB/s'):'ETA ... • '+(speed/1048576).toFixed(1)+' MB/s';
+    }
+    fill.style.width='100%';pct.textContent='100%';eta.textContent='ETA 0s';
+    const b=new Blob(chunks);
+    const o=URL.createObjectURL(b);
+    const a=document.createElement('a');a.href=o;a.download=fname;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(o),10000);
+    setStatus('✅ baixado '+fmt(got)+'! olha Downloads');
+    if(navigator.vibrate)try{navigator.vibrate([40,40,40])}catch(e){}
+  }catch(e){setStatus('❌ erro: '+e.message,1);}
+  finally{if(btn){btn.textContent=old;btn.disabled=false;}setTimeout(()=>prog.classList.remove('show'),4000);}
+}
+$('dhd').onclick=(e)=>{if(!DATA)return;dl(DATA.hdplay||DATA.play,'tok_HD.mp4',e.currentTarget);};
+$('dmp3').onclick=(e)=>{if(!DATA)return;dl(DATA.music||(DATA.music_info&&DATA.music_info.play),'tok.mp3',e.currentTarget);};
+$('dopen').onclick=()=>{if(!DATA)return;window.open(DATA.hdplay||DATA.play,'_blank');};
+function saveHist(u,t){
+  try{
+    let h=JSON.parse(localStorage.getItem('tok_hist')||'[]');
+    h=h.filter(x=>x.u!==u);h.unshift({u,t});h=h.slice(0,8);
+    localStorage.setItem('tok_hist',JSON.stringify(h));renderHist();
+  }catch(e){}
+}
+function renderHist(){
+  try{
+    const h=JSON.parse(localStorage.getItem('tok_hist')||'[]');
+    if(!h.length)return;
+    $('histCard').style.display='block';
+    $('hist').innerHTML='';
+    h.forEach(x=>{const b=document.createElement('button');b.textContent='▶ '+x.t.slice(0,60);b.onclick=()=>{url.value=x.u;fetchIt();window.scrollTo(0,0)};$('hist').appendChild(b);});
+  }catch(e){}
+}
+renderHist();
+</script>
+</body>
+</html>
